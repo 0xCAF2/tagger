@@ -6,7 +6,7 @@ part of 'tags.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tagsHash() => r'086fec5b4a2cf42e294d768e5f32a5acc37e1059';
+String _$tagsHash() => r'792665cf64bc3ef20054d49e6631c4e50c7a0878';
 
 /// See also [Tags].
 @ProviderFor(Tags)

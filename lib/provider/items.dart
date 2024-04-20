@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tagger/model/item.dart';
+import 'package:tagger/model/tag.dart';
+import 'package:tagger/provider/tags.dart';
 
 part 'items.g.dart';
 
 @riverpod
 class Items extends _$Items {
-  static const _idCounterKey = 'idCounter';
+  static const _itemIdKey = 'itemId';
   static const _itemsKey = 'items';
 
   static late int _idCounter;
@@ -16,7 +18,7 @@ class Items extends _$Items {
   @override
   FutureOr<List<Item>> build() async {
     final prefs = await SharedPreferences.getInstance();
-    _idCounter = prefs.getInt(_idCounterKey) ?? 0;
+    _idCounter = prefs.getInt(_itemIdKey) ?? 0;
     final List<dynamic> items = jsonDecode(prefs.getString(_itemsKey) ?? '[]');
     return items.map((itemStr) => Item.fromJson(jsonDecode(itemStr))).toList();
   }
@@ -27,12 +29,16 @@ class Items extends _$Items {
       return;
     }
 
-    final item = Item(
-      id: _idCounter++,
-      text: text,
-      tags: [],
-    );
-    state = AsyncData([...items, item]);
+    late Tag defaultTag;
+    ref.read(tagsProvider.future).then((tags) {
+      defaultTag = tags.first;
+      final item = Item(
+        id: _idCounter++,
+        text: text,
+        tags: [defaultTag.id],
+      );
+      state = AsyncData([...items, item]);
+    });
   }
 
   void reorder(int oldIndex, int newIndex) {

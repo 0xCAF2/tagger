@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tagger/widget/item_list.dart';
+import 'package:tagger/widget/tag_list.dart';
 
 class Tagger extends HookConsumerWidget {
   const Tagger({super.key});
@@ -25,7 +26,7 @@ class Tagger extends HookConsumerWidget {
               NavigationRailDestination(
                 icon: Icon(Icons.label_outline),
                 selectedIcon: Icon(Icons.label),
-                label: Text('Label'),
+                label: Text('Tags'),
               ),
             ],
             selectedIndex: selectedIndex.value,
@@ -36,7 +37,7 @@ class Tagger extends HookConsumerWidget {
               index: selectedIndex.value,
               children: const [
                 ItemList(),
-                Center(child: Text('Label')),
+                TagList(),
               ],
             ),
           ),

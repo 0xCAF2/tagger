@@ -12,6 +12,7 @@ class ItemList extends HookConsumerWidget {
     final textController = useTextEditingController();
     final textFocusNode = useFocusNode();
     final addItem = useCallback(() {
+      if (textController.text.trim().isEmpty) return;
       ref.read(itemsProvider.notifier).add(textController.text);
       textController.clear();
       textFocusNode.requestFocus();

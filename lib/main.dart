@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tagger/tagger.dart';
+import 'package:tagger/widget/tagger.dart';
 
 void main() {
   runApp(const MyApp());

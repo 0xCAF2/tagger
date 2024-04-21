@@ -30,13 +30,15 @@ class ColorPicker extends HookConsumerWidget {
 }
 
 class _ColorButton extends ConsumerWidget {
-  const _ColorButton({super.key, required this.color, this.focusNode});
+  const _ColorButton({required this.color, this.focusNode});
 
   final Color color;
   final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedColor = ref.watch(selectedColorProvider);
+
     return Theme(
       data: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(
@@ -44,7 +46,7 @@ class _ColorButton extends ConsumerWidget {
         ),
       ),
       child: IconButton(
-        isSelected: color == ref.watch(selectedColorProvider),
+        isSelected: color.value == selectedColor.value,
         icon: const Icon(Icons.circle),
         selectedIcon: const Icon(Icons.check_circle),
         iconSize: 32,

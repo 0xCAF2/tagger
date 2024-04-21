@@ -41,6 +41,40 @@ class Items extends _$Items {
     });
   }
 
+  void edit({required int id, required String text}) {
+    final items = state.value;
+    if (items == null) {
+      return;
+    }
+
+    final index = items.indexWhere((item) => item.id == id);
+    if (index == -1) {
+      return;
+    }
+
+    final item = items[index];
+    state = AsyncData([
+      ...items.sublist(0, index),
+      item.copyWith(text: text),
+      ...items.sublist(index + 1),
+    ]);
+  }
+
+  void delete(int id) {
+    final items = state.value;
+    if (items == null) {
+      return;
+    }
+
+    final index = items.indexWhere((item) => item.id == id);
+    if (index == -1) {
+      return;
+    }
+
+    state =
+        AsyncData([...items.sublist(0, index), ...items.sublist(index + 1)]);
+  }
+
   void reorder(int oldIndex, int newIndex) {
     final items = state.value;
     if (items == null) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tagger/model/item.dart';
 import 'package:tagger/provider/items.dart';
 import 'package:tagger/widget/item_view.dart';
 
@@ -18,6 +19,34 @@ class ItemList extends HookConsumerWidget {
       textFocusNode.requestFocus();
     }, const []);
 
+    final canAddItem = useState(false);
+    useEffect(() {
+      textController.addListener(() {
+        canAddItem.value = textController.text.trim().isNotEmpty;
+      });
+      return null;
+    }, const []);
+
+    final editingItem = useState<Item?>(null);
+
+    final editItem = useCallback(() {
+      if (editingItem.value == null) return;
+      if (textController.text.trim().isEmpty) {
+        ref.read(itemsProvider.notifier).delete(editingItem.value!.id);
+        textController.clear();
+        textFocusNode.requestFocus();
+        editingItem.value = null;
+        return;
+      }
+      ref.read(itemsProvider.notifier).edit(
+            id: editingItem.value!.id,
+            text: textController.text,
+          );
+      textController.clear();
+      textFocusNode.requestFocus();
+      editingItem.value = null;
+    }, const []);
+
     return items.when(
       data: (data) => Stack(
         children: [
@@ -30,12 +59,18 @@ class ItemList extends HookConsumerWidget {
                 controller: textController,
                 focusNode: textFocusNode,
                 decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: addItem,
-                  ),
+                  suffixIcon: editingItem.value == null
+                      ? IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: canAddItem.value ? addItem : null,
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.done),
+                          onPressed: editItem,
+                        ),
                 ),
-                onSubmitted: (_) => addItem(),
+                onSubmitted: (_) =>
+                    editingItem.value == null ? addItem() : editItem(),
               ),
             ),
           ),
@@ -43,10 +78,19 @@ class ItemList extends HookConsumerWidget {
             padding: const EdgeInsets.only(top: 120, right: 80),
             child: ReorderableListView.builder(
               itemCount: data.length,
-              itemBuilder: (context, index) => ItemView(
-                item: data[index],
-                key: ValueKey(data[index].id),
-              ),
+              itemBuilder: (context, index) {
+                final item = data[index];
+                return ItemView(
+                  item: item,
+                  key: ValueKey(item.id),
+                  onTap: () {
+                    textController.text = item.text;
+                    textFocusNode.requestFocus();
+                    editingItem.value = item;
+                  },
+                  isEditing: editingItem.value == item,
+                );
+              },
               onReorder: (oldIndex, newIndex) {
                 ref.read(itemsProvider.notifier).reorder(oldIndex, newIndex);
               },

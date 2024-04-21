@@ -47,4 +47,52 @@ class Tags extends _$Tags {
     );
     state = AsyncData([...tags, tag]);
   }
+
+  void edit({required int id, required String name, required Color color}) {
+    final tags = state.value;
+    if (tags == null) {
+      return;
+    }
+
+    final index = tags.indexWhere((tag) => tag.id == id);
+    if (index == -1) {
+      return;
+    }
+
+    final newTags = List<Tag>.from(tags);
+    newTags[index] = Tag(
+      id: id,
+      name: name,
+      colorValue: color.value,
+    );
+    state = AsyncData(newTags);
+  }
+
+  void delete(int id) {
+    final tags = state.value;
+    if (tags == null) {
+      return;
+    }
+
+    if (tags.length == 1) {
+      return;
+    }
+    final newTags = List<Tag>.from(tags);
+    newTags.removeWhere((tag) => tag.id == id);
+    state = AsyncData(newTags);
+  }
+
+  void reorder(int oldIndex, int newIndex) {
+    final tags = state.value;
+    if (tags == null) {
+      return;
+    }
+
+    final item = tags.removeAt(oldIndex);
+    if (oldIndex < newIndex) {
+      --newIndex;
+    }
+    tags.insert(newIndex, item);
+    state = AsyncData([...tags]);
+  }
 }

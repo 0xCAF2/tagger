@@ -11,7 +11,7 @@ part 'items.g.dart';
 @Riverpod(keepAlive: true)
 class Items extends _$Items {
   static const _itemIdKey = 'itemId';
-  static const _itemsKey = 'items';
+  static const itemsKey = 'items';
 
   static late int _idCounter;
 
@@ -19,8 +19,12 @@ class Items extends _$Items {
   FutureOr<List<Item>> build() async {
     final prefs = await SharedPreferences.getInstance();
     _idCounter = prefs.getInt(_itemIdKey) ?? 0;
-    final List<dynamic> items = jsonDecode(prefs.getString(_itemsKey) ?? '[]');
-    return items.map((itemStr) => Item.fromJson(jsonDecode(itemStr))).toList();
+    try {
+      final List<dynamic> items = jsonDecode(prefs.getString(itemsKey) ?? '[]');
+      return items.map((itemStr) => Item.fromJson(itemStr)).toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   void add(String text) {

@@ -8,7 +8,10 @@ import 'package:tagger/widget/color_picker.dart';
 import 'package:tagger/widget/tag_view.dart';
 
 class TagList extends HookConsumerWidget {
-  const TagList({super.key});
+  const TagList({super.key, required this.storeIndex});
+
+  final ValueNotifier<int> storeIndex;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(tagsProvider);
@@ -20,6 +23,7 @@ class TagList extends HookConsumerWidget {
       ref.read(tagsProvider.notifier).add(name: nameController.text);
       nameController.clear();
       nameFocusNode.requestFocus();
+      storeIndex.value++;
     }, const []);
 
     final canAddTag = useState(false);
@@ -39,6 +43,7 @@ class TagList extends HookConsumerWidget {
         nameController.clear();
         nameFocusNode.requestFocus();
         editingTag.value = null;
+        storeIndex.value++;
         return;
       }
       ref.read(tagsProvider.notifier).edit(
@@ -49,6 +54,7 @@ class TagList extends HookConsumerWidget {
       nameController.clear();
       nameFocusNode.requestFocus();
       editingTag.value = null;
+      storeIndex.value++;
     }, const []);
 
     return Row(

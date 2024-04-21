@@ -6,11 +6,11 @@ part of 'tags.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tagsHash() => r'792665cf64bc3ef20054d49e6631c4e50c7a0878';
+String _$tagsHash() => r'50e234c9f1a2402c3f858f9cb7f8d02c8c905c10';
 
 /// See also [Tags].
 @ProviderFor(Tags)
-final tagsProvider = AutoDisposeAsyncNotifierProvider<Tags, List<Tag>>.internal(
+final tagsProvider = AsyncNotifierProvider<Tags, List<Tag>>.internal(
   Tags.new,
   name: r'tagsProvider',
   debugGetCreateSourceHash:
@@ -19,6 +19,6 @@ final tagsProvider = AutoDisposeAsyncNotifierProvider<Tags, List<Tag>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$Tags = AutoDisposeAsyncNotifier<List<Tag>>;
+typedef _$Tags = AsyncNotifier<List<Tag>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

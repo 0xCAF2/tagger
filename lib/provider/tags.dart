@@ -11,7 +11,7 @@ part 'tags.g.dart';
 @Riverpod(keepAlive: true)
 class Tags extends _$Tags {
   static const _tagIdKey = 'tagId';
-  static const _tagsKey = 'tags';
+  static const tagsKey = 'tags';
 
   static late int _idCounter;
 
@@ -19,18 +19,21 @@ class Tags extends _$Tags {
   FutureOr<List<Tag>> build() async {
     final prefs = await SharedPreferences.getInstance();
     _idCounter = prefs.getInt(_tagIdKey) ?? 0;
-    final List<dynamic> tagsListStr =
-        jsonDecode(prefs.getString(_tagsKey) ?? '[]');
-    final tags =
-        tagsListStr.map((tagStr) => Tag.fromJson(jsonDecode(tagStr))).toList();
-    if (tags.isEmpty) {
-      tags.add(Tag(
-        id: _idCounter++,
-        name: 'ToDo',
-        colorValue: Colors.purple.value,
-      ));
+    try {
+      final List<dynamic> tagsListStr =
+          jsonDecode(prefs.getString(tagsKey) ?? '[]');
+      final tags = tagsListStr.map((tagStr) => Tag.fromJson(tagStr)).toList();
+      if (tags.isEmpty) {
+        tags.add(Tag(
+          id: _idCounter++,
+          name: 'ToDo',
+          colorValue: Colors.purple.value,
+        ));
+      }
+      return tags;
+    } catch (_) {
+      return [];
     }
-    return tags;
   }
 
   void add({required String name}) {

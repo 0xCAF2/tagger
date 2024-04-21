@@ -6,7 +6,10 @@ import 'package:tagger/provider/items.dart';
 import 'package:tagger/widget/item_view.dart';
 
 class ItemList extends HookConsumerWidget {
-  const ItemList({super.key});
+  const ItemList({super.key, required this.storeIndex});
+
+  final ValueNotifier<int> storeIndex;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(itemsProvider);
@@ -17,6 +20,7 @@ class ItemList extends HookConsumerWidget {
       ref.read(itemsProvider.notifier).add(textController.text);
       textController.clear();
       textFocusNode.requestFocus();
+      storeIndex.value++;
     }, const []);
 
     final canAddItem = useState(false);
@@ -39,6 +43,7 @@ class ItemList extends HookConsumerWidget {
         textController.clear();
         textFocusNode.requestFocus();
         editingItem.value = null;
+        storeIndex.value++;
         return;
       }
       ref.read(itemsProvider.notifier).edit(
@@ -48,6 +53,7 @@ class ItemList extends HookConsumerWidget {
       textController.clear();
       textFocusNode.requestFocus();
       editingItem.value = null;
+      storeIndex.value++;
     }, const []);
 
     return items.when(

@@ -38,6 +38,7 @@ class ItemView extends HookConsumerWidget {
     );
 
     return ListTile(
+      hoverColor: Colors.purple.withOpacity(0.05),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

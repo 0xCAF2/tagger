@@ -8,7 +8,7 @@ import 'package:tagger/provider/selected_color.dart';
 
 part 'tags.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Tags extends _$Tags {
   static const _tagIdKey = 'tagId';
   static const _tagsKey = 'tags';

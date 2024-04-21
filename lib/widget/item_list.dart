@@ -24,6 +24,9 @@ class ItemList extends HookConsumerWidget {
       textController.addListener(() {
         canAddItem.value = textController.text.trim().isNotEmpty;
       });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        textFocusNode.requestFocus();
+      });
       return null;
     }, const []);
 

@@ -11,17 +11,22 @@ part 'store.g.dart';
 class Store extends _$Store {
   @override
   FutureOr<int> build() {
-    return 0;
+    return 0; // dummy
   }
 
   Future<void> save() async {
     final items = await ref.read(itemsProvider.future);
     final tags = await ref.read(tagsProvider.future);
     final prefs = await SharedPreferences.getInstance();
-    // Save items and tags to a prefs
+
+    // Save items and tags to a prefs.
     final itemsStr = jsonEncode(items.map((item) => item.toJson()).toList());
     await prefs.setString(Items.itemsKey, itemsStr);
     final tagsStr = jsonEncode(tags.map((tag) => tag.toJson()).toList());
     await prefs.setString(Tags.tagsKey, tagsStr);
+
+    // Save id counters.
+    await prefs.setInt(Items.itemIdKey, Items.idCounter);
+    await prefs.setInt(Tags.tagIdKey, Tags.idCounter);
   }
 }

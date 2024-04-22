@@ -63,7 +63,7 @@ class ItemList extends HookConsumerWidget {
             top: 8,
             child: Container(
               padding: const EdgeInsets.all(8.0),
-              width: 400,
+              width: 560,
               child: TextField(
                 controller: textController,
                 focusNode: textFocusNode,

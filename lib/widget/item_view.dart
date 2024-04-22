@@ -42,7 +42,7 @@ class ItemView extends HookConsumerWidget {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.text),
+          Text(item.text, style: const TextStyle(fontWeight: FontWeight.bold)),
           tags.when(
             data: (data) => Wrap(
               children: [

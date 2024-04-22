@@ -10,15 +10,15 @@ part 'items.g.dart';
 
 @Riverpod(keepAlive: true)
 class Items extends _$Items {
-  static const _itemIdKey = 'itemId';
+  static const itemIdKey = 'itemId';
   static const itemsKey = 'items';
 
-  static late int _idCounter;
+  static late int idCounter;
 
   @override
   FutureOr<List<Item>> build() async {
     final prefs = await SharedPreferences.getInstance();
-    _idCounter = prefs.getInt(_itemIdKey) ?? 0;
+    idCounter = prefs.getInt(itemIdKey) ?? 0;
     try {
       final List<dynamic> items = jsonDecode(prefs.getString(itemsKey) ?? '[]');
       return items.map((itemStr) => Item.fromJson(itemStr)).toList();
@@ -37,7 +37,7 @@ class Items extends _$Items {
     ref.read(tagsProvider.future).then((tags) {
       defaultTag = tags.first;
       final item = Item(
-        id: _idCounter++,
+        id: idCounter++,
         text: text,
         tags: [defaultTag.id],
       );

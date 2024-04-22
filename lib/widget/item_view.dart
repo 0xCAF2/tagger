@@ -6,7 +6,6 @@ import 'package:tagger/model/item.dart';
 import 'package:tagger/model/tag.dart';
 import 'package:tagger/provider/items.dart';
 import 'package:tagger/provider/tags.dart';
-import 'package:tagger/widget/tag_selector.dart';
 
 class ItemView extends HookConsumerWidget {
   const ItemView({
@@ -24,21 +23,17 @@ class ItemView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(tagsProvider);
     final selectTag = useCallback(
-      ([Tag? clickedTag]) async {
-        final tag = await showDialog(
-          context: context,
-          builder: (context) => const TagSelector(),
-        );
-        if (tag == null) return;
+      ({required Tag selectedTag, Tag? clickedTag}) async {
         ref
             .read(itemsProvider.notifier)
-            .tag(item: item, tag: tag, clickedTag: clickedTag);
+            .tag(item: item, tag: selectedTag, clickedTag: clickedTag);
       },
       [item],
     );
 
     return ListTile(
       hoverColor: Colors.purple.withOpacity(0.05),
+      focusColor: Colors.transparent,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,25 +42,36 @@ class ItemView extends HookConsumerWidget {
             data: (data) => Wrap(
               children: [
                 for (final tagId in item.tags) ...[
-                  ActionChip(
-                    key: ValueKey(tagId),
-                    avatar: Icon(Icons.label,
-                        color: Color(data.getTagById(tagId).colorValue)),
-                    label: Text(data.getTagById(tagId).name),
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
+                  _TagMenu(
+                    selectTag: selectTag,
+                    tagId: tagId,
+                    tags: data,
+                    builder: (context, onPressed) => ActionChip(
+                      key: ValueKey(tagId),
+                      avatar: Icon(
+                        Icons.label,
+                        color: Color(data.getTagById(tagId).colorValue),
+                      ),
+                      label: Text(data.getTagById(tagId).name),
+                      side: BorderSide.none,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      backgroundColor: Color(
+                        data.getTagById(tagId).colorValue,
+                      ).withOpacity(0.1),
+                      onPressed: onPressed,
                     ),
-                    backgroundColor: Color(data.getTagById(tagId).colorValue)
-                        .withOpacity(0.1),
-                    onPressed: () => selectTag(data.getTagById(
-                        tagId)), // This argument is the clicked tag.
                   ),
                   const SizedBox(width: 8),
                 ],
-                IconButton(
-                  icon: const Icon(Icons.label, size: 16),
-                  onPressed: () => selectTag(),
+                _TagMenu(
+                  selectTag: selectTag,
+                  tags: data,
+                  builder: (context, onPressed) => IconButton(
+                    onPressed: onPressed,
+                    icon: const Icon(Icons.label, size: 16),
+                  ),
                 ),
               ],
             ),
@@ -78,6 +84,55 @@ class ItemView extends HookConsumerWidget {
       trailing: Padding(
         padding: const EdgeInsets.only(right: 16),
         child: isEditing ? const Icon(Icons.edit) : null,
+      ),
+    );
+  }
+}
+
+class _TagMenu extends StatelessWidget {
+  const _TagMenu({
+    this.tagId,
+    required this.tags,
+    required this.selectTag,
+    required this.builder,
+  });
+
+  final int? tagId;
+  final List<Tag> tags;
+  final void Function({required Tag selectedTag, Tag? clickedTag}) selectTag;
+  final Widget Function(BuildContext context, VoidCallback onPressed) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return MenuAnchor(
+      menuChildren: [
+        for (final tag in tags)
+          MenuItemButton(
+            onPressed: () => selectTag(
+              selectedTag: tag,
+              clickedTag: tagId == null ? null : tags.getTagById(tagId!),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.label,
+                  color: Color(tag.colorValue),
+                ),
+                const SizedBox(width: 8),
+                Text(tag.name),
+              ],
+            ),
+          )
+      ],
+      builder: (_, controller, __) => builder(
+        context,
+        () {
+          if (controller.isOpen) {
+            controller.close();
+          } else {
+            controller.open();
+          }
+        },
       ),
     );
   }

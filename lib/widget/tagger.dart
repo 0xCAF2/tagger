@@ -76,14 +76,21 @@ class Tagger extends HookConsumerWidget {
             child: IndexedStack(
               index: selectedIndex.value,
               children: [
-                ItemList(storeIndex: storeIndex),
-                TagList(storeIndex: storeIndex),
+                ItemList(
+                  storeIndex: storeIndex,
+                  hasFocus: selectedIndex.value == 0,
+                ),
+                TagList(
+                  storeIndex: storeIndex,
+                  hasFocus: selectedIndex.value == 1,
+                ),
                 ...tags.when(
                   data: (data) => [
-                    for (var tag in data)
+                    for (var i = 0; i < data.length; ++i)
                       ItemList(
                         storeIndex: storeIndex,
-                        tagId: tag.id,
+                        tagId: data[i].id,
+                        hasFocus: selectedIndex.value == i + 2,
                       ),
                   ],
                   error: (error, stackTrace) => [

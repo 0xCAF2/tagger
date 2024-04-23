@@ -100,12 +100,14 @@ class ItemList extends HookConsumerWidget {
                           editingItem.value = item;
                         },
                         isEditing: editingItem.value == item,
+                        storeIndex: storeIndex,
                       );
                     },
                     onReorder: (oldIndex, newIndex) {
                       ref
                           .read(itemsProvider.notifier)
                           .reorder(oldIndex, newIndex);
+                      storeIndex.value++;
                     },
                   )
                 : ListView.builder(
@@ -122,6 +124,7 @@ class ItemList extends HookConsumerWidget {
                           editingItem.value = item;
                         },
                         isEditing: editingItem.value == item,
+                        storeIndex: storeIndex,
                       );
                     },
                     itemCount:

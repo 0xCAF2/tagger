@@ -13,11 +13,13 @@ class ItemView extends HookConsumerWidget {
     required this.item,
     required this.onTap,
     this.isEditing = false,
+    required this.storeIndex,
   });
 
   final Item item;
   final VoidCallback onTap;
   final bool isEditing;
+  final ValueNotifier<int> storeIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,6 +29,7 @@ class ItemView extends HookConsumerWidget {
         ref
             .read(itemsProvider.notifier)
             .tag(item: item, tag: selectedTag, clickedTag: clickedTag);
+        storeIndex.value++;
       },
       [item],
     );

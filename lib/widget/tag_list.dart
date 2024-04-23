@@ -110,6 +110,7 @@ class TagList extends HookConsumerWidget {
                 },
                 onReorder: (oldIndex, newIndex) {
                   ref.read(tagsProvider.notifier).reorder(oldIndex, newIndex);
+                  storeIndex.value++;
                 },
               ),
               error: (error, stackTrace) => Center(

@@ -6,10 +6,16 @@ import 'package:tagger/provider/items.dart';
 import 'package:tagger/widget/item_view.dart';
 
 class ItemList extends HookConsumerWidget {
-  const ItemList({super.key, required this.storeIndex, this.tagId});
+  const ItemList({
+    super.key,
+    required this.storeIndex,
+    this.tagId,
+    this.hasFocus = false,
+  });
 
   final ValueNotifier<int> storeIndex;
   final int? tagId;
+  final bool hasFocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +24,7 @@ class ItemList extends HookConsumerWidget {
     final textFocusNode = useFocusNode();
     final addItem = useCallback(() {
       if (textController.text.trim().isEmpty) return;
-      ref.read(itemsProvider.notifier).add(textController.text);
+      ref.read(itemsProvider.notifier).add(textController.text, tagId);
       textController.clear();
       textFocusNode.requestFocus();
       storeIndex.value++;
@@ -29,11 +35,16 @@ class ItemList extends HookConsumerWidget {
       textController.addListener(() {
         canAddItem.value = textController.text.trim().isNotEmpty;
       });
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        textFocusNode.requestFocus();
-      });
       return null;
     }, const []);
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (hasFocus) {
+          textFocusNode.requestFocus();
+        }
+      });
+      return null;
+    }, [hasFocus]);
 
     final editingItem = useState<Item?>(null);
 

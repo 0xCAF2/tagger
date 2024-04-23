@@ -8,9 +8,10 @@ import 'package:tagger/widget/color_picker.dart';
 import 'package:tagger/widget/tag_view.dart';
 
 class TagList extends HookConsumerWidget {
-  const TagList({super.key, required this.storeIndex});
+  const TagList({super.key, required this.storeIndex, this.hasFocus = false});
 
   final ValueNotifier<int> storeIndex;
+  final bool hasFocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +34,15 @@ class TagList extends HookConsumerWidget {
       });
       return null;
     }, const []);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (hasFocus) {
+          nameFocusNode.requestFocus();
+        }
+      });
+      return null;
+    }, [hasFocus]);
 
     final editingTag = useState<Tag?>(null);
 

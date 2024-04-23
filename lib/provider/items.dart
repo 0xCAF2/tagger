@@ -27,7 +27,7 @@ class Items extends _$Items {
     }
   }
 
-  void add(String text) {
+  void add(String text, int? tagId) {
     final items = state.value;
     if (items == null) {
       return;
@@ -39,9 +39,9 @@ class Items extends _$Items {
       final item = Item(
         id: idCounter++,
         text: text,
-        tags: [defaultTag.id],
+        tags: [tagId ?? defaultTag.id],
       );
-      state = AsyncData([...items, item]);
+      state = AsyncData([item, ...items]);
     });
   }
 

@@ -6,9 +6,10 @@ import 'package:tagger/provider/items.dart';
 import 'package:tagger/widget/item_view.dart';
 
 class ItemList extends HookConsumerWidget {
-  const ItemList({super.key, required this.storeIndex});
+  const ItemList({super.key, required this.storeIndex, this.tagId});
 
   final ValueNotifier<int> storeIndex;
+  final int? tagId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,25 +86,47 @@ class ItemList extends HookConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 120, right: 80),
-            child: ReorderableListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final item = data[index];
-                return ItemView(
-                  item: item,
-                  key: ValueKey(item.id),
-                  onTap: () {
-                    textController.text = item.text;
-                    textFocusNode.requestFocus();
-                    editingItem.value = item;
-                  },
-                  isEditing: editingItem.value == item,
-                );
-              },
-              onReorder: (oldIndex, newIndex) {
-                ref.read(itemsProvider.notifier).reorder(oldIndex, newIndex);
-              },
-            ),
+            child: tagId == null
+                ? ReorderableListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final item = data[index];
+                      return ItemView(
+                        item: item,
+                        key: ValueKey(item.id),
+                        onTap: () {
+                          textController.text = item.text;
+                          textFocusNode.requestFocus();
+                          editingItem.value = item;
+                        },
+                        isEditing: editingItem.value == item,
+                      );
+                    },
+                    onReorder: (oldIndex, newIndex) {
+                      ref
+                          .read(itemsProvider.notifier)
+                          .reorder(oldIndex, newIndex);
+                    },
+                  )
+                : ListView.builder(
+                    itemBuilder: (context, index) {
+                      final item = data
+                          .where((item) => item.tags.contains(tagId))
+                          .elementAt(index);
+                      return ItemView(
+                        item: item,
+                        key: ValueKey(item.id),
+                        onTap: () {
+                          textController.text = item.text;
+                          textFocusNode.requestFocus();
+                          editingItem.value = item;
+                        },
+                        isEditing: editingItem.value == item,
+                      );
+                    },
+                    itemCount:
+                        data.where((item) => item.tags.contains(tagId)).length,
+                  ),
           ),
         ],
       ),

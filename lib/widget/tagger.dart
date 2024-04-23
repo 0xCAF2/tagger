@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tagger/provider/store.dart';
+import 'package:tagger/provider/tags.dart';
 import 'package:tagger/widget/item_list.dart';
 import 'package:tagger/widget/tag_list.dart';
 
@@ -10,6 +11,8 @@ class Tagger extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tags = ref.watch(tagsProvider);
+
     final selectedIndex = useState(0);
     final storeIndex = useState(0);
     final debouncedStoreIndex = useDebounced(
@@ -26,20 +29,45 @@ class Tagger extends HookConsumerWidget {
       body: Row(
         children: [
           NavigationRail(
+            labelType: NavigationRailLabelType.all,
             onDestinationSelected: (index) {
               selectedIndex.value = index;
             },
-            destinations: const [
-              NavigationRailDestination(
+            destinations: [
+              const NavigationRailDestination(
                 icon: Icon(Icons.list),
                 selectedIcon: Icon(Icons.list_outlined),
-                label: Text('List'),
+                label: Text(''),
               ),
-              NavigationRailDestination(
+              const NavigationRailDestination(
                 icon: Icon(Icons.label_outline),
                 selectedIcon: Icon(Icons.label),
-                label: Text('Tags'),
+                label: Text(''),
               ),
+              ...tags.when(
+                data: (data) => [
+                  for (var tag in data)
+                    NavigationRailDestination(
+                      icon: Icon(
+                        Icons.label,
+                        color: Color(tag.colorValue),
+                      ),
+                      label: Text(tag.name),
+                    ),
+                ],
+                error: (error, stackTrace) => [
+                  const NavigationRailDestination(
+                    icon: Icon(Icons.error),
+                    label: Text(''),
+                  ),
+                ],
+                loading: () => [
+                  const NavigationRailDestination(
+                    icon: Icon(Icons.timer),
+                    label: Text(''),
+                  ),
+                ],
+              )
             ],
             selectedIndex: selectedIndex.value,
           ),
@@ -50,6 +78,23 @@ class Tagger extends HookConsumerWidget {
               children: [
                 ItemList(storeIndex: storeIndex),
                 TagList(storeIndex: storeIndex),
+                ...tags.when(
+                  data: (data) => [
+                    for (var tag in data)
+                      ItemList(
+                        storeIndex: storeIndex,
+                        tagId: tag.id,
+                      ),
+                  ],
+                  error: (error, stackTrace) => [
+                    Center(child: Text(error.toString())),
+                  ],
+                  loading: () => [
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

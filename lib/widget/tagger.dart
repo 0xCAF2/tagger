@@ -88,6 +88,7 @@ class Tagger extends HookConsumerWidget {
                   data: (data) => [
                     for (var i = 0; i < data.length; ++i)
                       ItemList(
+                        key: ValueKey(data[i].id),
                         storeIndex: storeIndex,
                         tagId: data[i].id,
                         hasFocus: selectedIndex.value == i + 2,

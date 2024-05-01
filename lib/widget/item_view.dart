@@ -45,27 +45,45 @@ class ItemView extends HookConsumerWidget {
             data: (data) => Wrap(
               children: [
                 for (final tagId in item.tags) ...[
-                  _TagMenu(
-                    selectTag: selectTag,
-                    tagId: tagId,
-                    tags: data,
-                    builder: (context, onPressed) => ActionChip(
-                      key: ValueKey(tagId),
-                      avatar: Icon(
-                        Icons.label,
-                        color: Color(data.getTagById(tagId).colorValue),
+                  if (data.any((tag) => tag.id == tagId))
+                    _TagMenu(
+                      selectTag: selectTag,
+                      tagId: tagId,
+                      tags: data,
+                      builder: (context, onPressed) => ActionChip(
+                        key: ValueKey(tagId),
+                        avatar: Icon(
+                          Icons.label,
+                          color: Color(data.getTagById(tagId).colorValue),
+                        ),
+                        label: Text(data.getTagById(tagId).name),
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        backgroundColor: Color(
+                          data.getTagById(tagId).colorValue,
+                        ).withOpacity(0.1),
+                        onPressed: onPressed,
                       ),
-                      label: Text(data.getTagById(tagId).name),
-                      side: BorderSide.none,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      backgroundColor: Color(
-                        data.getTagById(tagId).colorValue,
-                      ).withOpacity(0.1),
-                      onPressed: onPressed,
-                    ),
-                  ),
+                    )
+                  else
+                    () {
+                      Future(() {
+                        final deletedTag = Tag(
+                          id: tagId,
+                          name: 'Deleted Tag',
+                          colorValue: 0,
+                        );
+                        ref.read(itemsProvider.notifier).tag(
+                              item: item,
+                              tag: deletedTag,
+                              clickedTag: deletedTag,
+                            );
+                        storeIndex.value++;
+                      });
+                      return const SizedBox();
+                    }(),
                   const SizedBox(width: 8),
                 ],
                 _TagMenu(

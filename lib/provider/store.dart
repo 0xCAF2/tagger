@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tagger/provider/items.dart';
+import 'package:tagger/provider/prefs.dart';
 import 'package:tagger/provider/tags.dart';
 
 part 'store.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Store extends _$Store {
   @override
   FutureOr<int> build() {
@@ -15,9 +15,9 @@ class Store extends _$Store {
   }
 
   Future<void> save() async {
-    final items = await ref.read(itemsProvider.future);
-    final tags = await ref.read(tagsProvider.future);
-    final prefs = await SharedPreferences.getInstance();
+    final items = ref.read(itemsProvider);
+    final tags = ref.read(tagsProvider);
+    final prefs = ref.read(prefsProvider);
 
     // Save items and tags to a prefs.
     final itemsStr = jsonEncode(items.map((item) => item.toJson()).toList());

@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'items.dart';
+part of 'prefs.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$itemsHash() => r'85fd7a7d9700cd1d63360b72a59eb456ac3b2e94';
+String _$prefsHash() => r'80ed39894297f77f781d1c4715ecac43c66c8e60';
 
-/// See also [Items].
-@ProviderFor(Items)
-final itemsProvider = NotifierProvider<Items, List<Item>>.internal(
-  Items.new,
-  name: r'itemsProvider',
+/// See also [prefs].
+@ProviderFor(prefs)
+final prefsProvider = Provider<SharedPreferencesWithCache>.internal(
+  prefs,
+  name: r'prefsProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$itemsHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$prefsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Items = Notifier<List<Item>>;
+typedef PrefsRef = ProviderRef<SharedPreferencesWithCache>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

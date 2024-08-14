@@ -44,30 +44,16 @@ class Tagger extends HookConsumerWidget {
                 selectedIcon: Icon(Icons.label),
                 label: Text(''),
               ),
-              ...tags.when(
-                data: (data) => [
-                  for (var tag in data)
-                    NavigationRailDestination(
-                      icon: Icon(
-                        Icons.label,
-                        color: Color(tag.colorValue),
-                      ),
-                      label: Text(tag.name),
+              ...[
+                for (var tag in tags)
+                  NavigationRailDestination(
+                    icon: Icon(
+                      Icons.label,
+                      color: Color(tag.colorValue),
                     ),
-                ],
-                error: (error, stackTrace) => [
-                  const NavigationRailDestination(
-                    icon: Icon(Icons.error),
-                    label: Text(''),
+                    label: Text(tag.name),
                   ),
-                ],
-                loading: () => [
-                  const NavigationRailDestination(
-                    icon: Icon(Icons.timer),
-                    label: Text(''),
-                  ),
-                ],
-              )
+              ],
             ],
             selectedIndex: selectedIndex.value,
           ),
@@ -84,25 +70,15 @@ class Tagger extends HookConsumerWidget {
                   storeIndex: storeIndex,
                   hasFocus: selectedIndex.value == 1,
                 ),
-                ...tags.when(
-                  data: (data) => [
-                    for (var i = 0; i < data.length; ++i)
-                      ItemList(
-                        key: ValueKey(data[i].id),
-                        storeIndex: storeIndex,
-                        tagId: data[i].id,
-                        hasFocus: selectedIndex.value == i + 2,
-                      ),
-                  ],
-                  error: (error, stackTrace) => [
-                    Center(child: Text(error.toString())),
-                  ],
-                  loading: () => [
-                    const Center(
-                      child: CircularProgressIndicator(),
+                ...[
+                  for (var i = 0; i < tags.length; ++i)
+                    ItemList(
+                      key: ValueKey(tags[i].id),
+                      storeIndex: storeIndex,
+                      tagId: tags[i].id,
+                      hasFocus: selectedIndex.value == i + 2,
                     ),
-                  ],
-                ),
+                ],
               ],
             ),
           ),

@@ -7,9 +7,11 @@ part of 'item.dart';
 // **************************************************************************
 
 _$ItemImpl _$$ItemImplFromJson(Map<String, dynamic> json) => _$ItemImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       text: json['text'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as int).toList(),
+      tags: (json['tags'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
     );
 
 Map<String, dynamic> _$$ItemImplToJson(_$ItemImpl instance) =>

@@ -68,88 +68,80 @@ class ItemList extends HookConsumerWidget {
       storeIndex.value++;
     }, const []);
 
-    return items.when(
-      data: (data) => Stack(
-        children: [
-          Positioned(
-            top: 8,
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              width: 560,
-              child: TextField(
-                controller: textController,
-                focusNode: textFocusNode,
-                decoration: InputDecoration(
-                  suffixIcon: editingItem.value == null
-                      ? IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: canAddItem.value ? addItem : null,
-                        )
-                      : IconButton(
-                          icon: const Icon(Icons.done),
-                          onPressed: editItem,
-                        ),
-                ),
-                onSubmitted: (_) =>
-                    editingItem.value == null ? addItem() : editItem(),
+    return Stack(
+      children: [
+        Positioned(
+          top: 8,
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            width: 560,
+            child: TextField(
+              controller: textController,
+              focusNode: textFocusNode,
+              decoration: InputDecoration(
+                suffixIcon: editingItem.value == null
+                    ? IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: canAddItem.value ? addItem : null,
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.done),
+                        onPressed: editItem,
+                      ),
               ),
+              onSubmitted: (_) =>
+                  editingItem.value == null ? addItem() : editItem(),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 120, right: 80),
-            child: tagId == null
-                ? ReorderableListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final item = data[index];
-                      return ItemView(
-                        item: item,
-                        key: ValueKey(item.id),
-                        onTap: () {
-                          textController.text = item.text;
-                          textFocusNode.requestFocus();
-                          editingItem.value = item;
-                        },
-                        isEditing: editingItem.value == item,
-                        storeIndex: storeIndex,
-                      );
-                    },
-                    onReorder: (oldIndex, newIndex) {
-                      ref
-                          .read(itemsProvider.notifier)
-                          .reorder(oldIndex, newIndex);
-                      storeIndex.value++;
-                    },
-                  )
-                : ListView.builder(
-                    itemBuilder: (context, index) {
-                      final item = data
-                          .where((item) => item.tags.contains(tagId))
-                          .elementAt(index);
-                      return ItemView(
-                        item: item,
-                        key: ValueKey(item.id),
-                        onTap: () {
-                          textController.text = item.text;
-                          textFocusNode.requestFocus();
-                          editingItem.value = item;
-                        },
-                        isEditing: editingItem.value == item,
-                        storeIndex: storeIndex,
-                      );
-                    },
-                    itemCount:
-                        data.where((item) => item.tags.contains(tagId)).length,
-                  ),
-          ),
-        ],
-      ),
-      error: (error, stackTrace) => Center(
-        child: Text(error.toString()),
-      ),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 120, right: 80),
+          child: tagId == null
+              ? ReorderableListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return ItemView(
+                      item: item,
+                      key: ValueKey(item.id),
+                      onTap: () {
+                        textController.text = item.text;
+                        textFocusNode.requestFocus();
+                        editingItem.value = item;
+                      },
+                      isEditing: editingItem.value == item,
+                      storeIndex: storeIndex,
+                    );
+                  },
+                  onReorder: (oldIndex, newIndex) {
+                    ref
+                        .read(itemsProvider.notifier)
+                        .reorder(oldIndex, newIndex);
+                    storeIndex.value++;
+                  },
+                )
+              : ListView.builder(
+                  itemBuilder: (context, index) {
+                    final item = items
+                        .where((item) => item.tags.contains(tagId))
+                        .elementAt(index);
+                    return ItemView(
+                      item: item,
+                      key: ValueKey(item.id),
+                      onTap: () {
+                        textController.text = item.text;
+                        textFocusNode.requestFocus();
+                        editingItem.value = item;
+                      },
+                      isEditing: editingItem.value == item,
+                      storeIndex: storeIndex,
+                    );
+                  },
+                  itemCount:
+                      items.where((item) => item.tags.contains(tagId)).length,
+                ),
+        ),
+      ],
     );
   }
 }

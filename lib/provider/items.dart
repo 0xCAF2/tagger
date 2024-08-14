@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tagger/model/item.dart';
 import 'package:tagger/model/tag.dart';
+import 'package:tagger/provider/prefs.dart';
 import 'package:tagger/provider/tags.dart';
 
 part 'items.g.dart';
@@ -16,8 +16,8 @@ class Items extends _$Items {
   static late int idCounter;
 
   @override
-  FutureOr<List<Item>> build() async {
-    final prefs = await SharedPreferences.getInstance();
+  List<Item> build() {
+    final prefs = ref.watch(prefsProvider);
     idCounter = prefs.getInt(itemIdKey) ?? 0;
     try {
       final List<dynamic> items = jsonDecode(prefs.getString(itemsKey) ?? '[]');
@@ -28,78 +28,51 @@ class Items extends _$Items {
   }
 
   void add(String text, int? tagId) {
-    final items = state.value;
-    if (items == null) {
-      return;
-    }
-
     late Tag defaultTag;
-    ref.read(tagsProvider.future).then((tags) {
-      defaultTag = tags.first;
-      final item = Item(
-        id: idCounter++,
-        text: text,
-        tags: [tagId ?? defaultTag.id],
-      );
-      state = AsyncData([item, ...items]);
-    });
+    final tags = ref.read(tagsProvider);
+    defaultTag = tags.first;
+    final item = Item(
+      id: idCounter++,
+      text: text,
+      tags: [tagId ?? defaultTag.id],
+    );
+    state = [item, ...state];
   }
 
   void edit({required int id, required String text}) {
-    final items = state.value;
-    if (items == null) {
-      return;
-    }
-
-    final index = items.indexWhere((item) => item.id == id);
+    final index = state.indexWhere((item) => item.id == id);
     if (index == -1) {
       return;
     }
 
-    final item = items[index];
-    state = AsyncData([
-      ...items.sublist(0, index),
+    final item = state[index];
+    state = [
+      ...state.sublist(0, index),
       item.copyWith(text: text),
-      ...items.sublist(index + 1),
-    ]);
+      ...state.sublist(index + 1),
+    ];
   }
 
   void delete(int id) {
-    final items = state.value;
-    if (items == null) {
-      return;
-    }
-
-    final index = items.indexWhere((item) => item.id == id);
+    final index = state.indexWhere((item) => item.id == id);
     if (index == -1) {
       return;
     }
 
-    state =
-        AsyncData([...items.sublist(0, index), ...items.sublist(index + 1)]);
+    state = [...state.sublist(0, index), ...state.sublist(index + 1)];
   }
 
   void reorder(int oldIndex, int newIndex) {
-    final items = state.value;
-    if (items == null) {
-      return;
-    }
-
-    final item = items.removeAt(oldIndex);
+    final item = state.removeAt(oldIndex);
     if (oldIndex < newIndex) {
       --newIndex;
     }
-    items.insert(newIndex, item);
-    state = AsyncData([...items]);
+    state.insert(newIndex, item);
+    state = [...state];
   }
 
   void tag({required Item item, required Tag tag, Tag? clickedTag}) {
-    final items = state.value;
-    if (items == null) {
-      return;
-    }
-
-    final index = items.indexWhere((i) => i.id == item.id);
+    final index = state.indexWhere((i) => i.id == item.id);
     if (index == -1) {
       return;
     }
@@ -155,10 +128,10 @@ class Items extends _$Items {
       // Add the tag if it's not added yet.
       updatedItem = item.copyWith(tags: [...item.tags, tag.id]);
     }
-    state = AsyncData([
-      ...items.sublist(0, index),
+    state = [
+      ...state.sublist(0, index),
       updatedItem,
-      ...items.sublist(index + 1),
-    ]);
+      ...state.sublist(index + 1),
+    ];
   }
 }

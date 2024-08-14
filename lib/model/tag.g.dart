@@ -7,9 +7,9 @@ part of 'tag.dart';
 // **************************************************************************
 
 _$TagImpl _$$TagImplFromJson(Map<String, dynamic> json) => _$TagImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      colorValue: json['colorValue'] as int,
+      colorValue: (json['colorValue'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$TagImplToJson(_$TagImpl instance) => <String, dynamic>{

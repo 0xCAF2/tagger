@@ -99,36 +99,28 @@ class TagList extends HookConsumerWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 120, right: 80),
-            child: tags.when(
-              data: (data) => ReorderableListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final tag = data[index];
-                  return TagView(
-                    tag: tag,
-                    key: ValueKey(tag.id),
-                    onTap: () {
-                      editingTag.value = tag;
-                      ref
-                          .read(selectedColorProvider.notifier)
-                          .select(Color(tag.colorValue));
-                      nameController.text = tag.name;
-                      nameFocusNode.requestFocus();
-                    },
-                    isEditing: editingTag.value == tag,
-                  );
-                },
-                onReorder: (oldIndex, newIndex) {
-                  ref.read(tagsProvider.notifier).reorder(oldIndex, newIndex);
-                  storeIndex.value++;
-                },
-              ),
-              error: (error, stackTrace) => Center(
-                child: Text(error.toString()),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
+            child: ReorderableListView.builder(
+              itemCount: tags.length,
+              itemBuilder: (context, index) {
+                final tag = tags[index];
+                return TagView(
+                  tag: tag,
+                  key: ValueKey(tag.id),
+                  onTap: () {
+                    editingTag.value = tag;
+                    ref
+                        .read(selectedColorProvider.notifier)
+                        .select(Color(tag.colorValue));
+                    nameController.text = tag.name;
+                    nameFocusNode.requestFocus();
+                  },
+                  isEditing: editingTag.value == tag,
+                );
+              },
+              onReorder: (oldIndex, newIndex) {
+                ref.read(tagsProvider.notifier).reorder(oldIndex, newIndex);
+                storeIndex.value++;
+              },
             ),
           ),
         ),

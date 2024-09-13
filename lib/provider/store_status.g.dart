@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'store.dart';
+part of 'store_status.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$storeHash() => r'1696c9c387f12b4c1d6e4dc9ed514c6db0eb8c10';
+String _$storeStatusHash() => r'12d28cb7cb00c90914904e7fdf428ac4ce8853a4';
 
-/// See also [Store].
-@ProviderFor(Store)
-final storeProvider = AsyncNotifierProvider<Store, int>.internal(
-  Store.new,
-  name: r'storeProvider',
+/// See also [StoreStatus].
+@ProviderFor(StoreStatus)
+final storeStatusProvider = AsyncNotifierProvider<StoreStatus, int>.internal(
+  StoreStatus.new,
+  name: r'storeStatusProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$storeHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$storeStatusHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Store = AsyncNotifier<int>;
+typedef _$StoreStatus = AsyncNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

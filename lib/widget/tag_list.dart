@@ -85,7 +85,7 @@ class TagList extends HookConsumerWidget {
                           onPressed: canAddTag.value ? addTag : null,
                         )
                       : IconButton(
-                          icon: const Icon(Icons.done),
+                          icon: const Icon(Icons.edit),
                           onPressed: editTag,
                         ),
                 ),

@@ -85,7 +85,7 @@ class ItemList extends HookConsumerWidget {
                         onPressed: canAddItem.value ? addItem : null,
                       )
                     : IconButton(
-                        icon: const Icon(Icons.done),
+                        icon: const Icon(Icons.edit),
                         onPressed: editItem,
                       ),
               ),

@@ -53,15 +53,15 @@ class ItemView extends HookConsumerWidget {
                       key: ValueKey(tagId),
                       avatar: Icon(
                         Icons.label,
-                        color: Color(tags.getTagById(tagId).colorValue),
+                        color: Color(tags.findTagById(tagId).colorValue),
                       ),
-                      label: Text(tags.getTagById(tagId).name),
+                      label: Text(tags.findTagById(tagId).name),
                       side: BorderSide.none,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
                       backgroundColor: Color(
-                        tags.getTagById(tagId).colorValue,
+                        tags.findTagById(tagId).colorValue,
                       ).withOpacity(0.1),
                       onPressed: onPressed,
                     ),
@@ -127,7 +127,7 @@ class _TagMenu extends StatelessWidget {
           MenuItemButton(
             onPressed: () => selectTag(
               selectedTag: tag,
-              clickedTag: tagId == null ? null : tags.getTagById(tagId!),
+              clickedTag: tagId == null ? null : tags.findTagById(tagId!),
             ),
             child: Row(
               children: [

@@ -35,7 +35,7 @@ class ItemView extends HookConsumerWidget {
     );
 
     return ListTile(
-      hoverColor: Colors.purple.withOpacity(0.05),
+      hoverColor: Colors.purple.withValues(alpha: 0.05),
       focusColor: Colors.transparent,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +62,7 @@ class ItemView extends HookConsumerWidget {
                       ),
                       backgroundColor: Color(
                         tags.findTagById(tagId).colorValue,
-                      ).withOpacity(0.1),
+                      ).withValues(alpha: 0.1),
                       onPressed: onPressed,
                     ),
                   )

@@ -27,7 +27,7 @@ class Tags extends _$Tags {
         tags.add(Tag(
           id: idCounter++,
           name: 'ToDo',
-          colorValue: Colors.purple.value,
+          colorValue: Colors.purple.toARGB32(),
         ));
       }
       return tags;
@@ -41,7 +41,7 @@ class Tags extends _$Tags {
     final tag = Tag(
       id: idCounter++,
       name: name,
-      colorValue: color.value,
+      colorValue: color.toARGB32(),
     );
     state = [...state, tag];
   }
@@ -56,7 +56,7 @@ class Tags extends _$Tags {
     newTags[index] = Tag(
       id: id,
       name: name,
-      colorValue: color.value,
+      colorValue: color.toARGB32(),
     );
     state = newTags;
   }

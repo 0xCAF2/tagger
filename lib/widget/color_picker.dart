@@ -46,7 +46,7 @@ class _ColorButton extends ConsumerWidget {
         ),
       ),
       child: IconButton(
-        isSelected: color.value == selectedColor.value,
+        isSelected: color.toARGB32() == selectedColor.toARGB32(),
         icon: const Icon(Icons.circle),
         selectedIcon: const Icon(Icons.check_circle),
         iconSize: 32,

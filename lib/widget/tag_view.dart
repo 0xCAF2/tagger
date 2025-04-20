@@ -17,7 +17,7 @@ class TagView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
-      hoverColor: Colors.purple.withOpacity(0.05),
+      hoverColor: Colors.purple.withValues(alpha: 0.05),
       leading: Icon(Icons.label, color: Color(tag.colorValue)),
       title: Text(tag.name),
       onTap: onTap,
